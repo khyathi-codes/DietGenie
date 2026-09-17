@@ -1,0 +1,71 @@
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Cormorant+Garamond:ital,wght@0,300;1,300;1,400&display=swap');
+
+/* If you are using Tailwind v4, use: @import "tailwindcss"; instead of the three lines below */
+@import "tailwindcss";
+*, *::before, *::after { 
+  box-sizing: border-box; 
+  margin: 0; 
+  padding: 0; 
+}
+
+html, body {
+  width: 100%; 
+  height: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
+  background: #020818;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── Custom Floating Input Style Fix ── */
+input::placeholder {
+  opacity: 0;
+  transition: opacity 0.2s ease-in-out;
+}
+
+input:focus::placeholder {
+  opacity: 0.35;
+}
+
+/* ── Keyframes ─────────────────────────────────── */
+
+@keyframes gold-shimmer {
+  0%, 100% { background-position: 0% 50%; }
+  50%      { background-position: 100% 50%; }
+}
+
+@keyframes lamp-float {
+  0%, 100% { transform: translateY(0px) rotate(-0.4deg); }
+  50%      { transform: translateY(-6px) rotate(0.4deg); }
+}
+
+/* Entry Animation: Scales up and sweeps upwards out of the lamp spout */
+@keyframes summon-genie {
+  0% {
+    transform: translateX(-50%) translateY(60px) scale(0);
+    opacity: 0;
+    filter: blur(15px);
+  }
+  100% {
+    transform: translateX(-50%) translateY(0) scale(1);
+    opacity: 1;
+    filter: blur(0px);
+  }
+}
+@keyframes float {
+  0% {
+    transform: translateY(0px);
+  }
+
+  50% {
+    transform: translateY(-12px);
+  }
+
+  100% {
+    transform: translateY(0px);
+  }
+}
+
+.float {
+  animation: float 4s ease-in-out infinite;
+}
