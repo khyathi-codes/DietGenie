@@ -14,7 +14,7 @@ export async function POST(req: Request) {
     const prompt = "Analyze this image of a food item or complete plate. Identify all items present, estimate weights, calculate calorie and protein metrics, and provide a constructive health insight.";
 
     const response = await ai.models.generateContent({
-      model: "gemini-2.5-flash",
+      model: "gemini-3.6-flash",
       contents: [
         {
           inlineData: {

@@ -68,7 +68,7 @@ if (existingPlan) {
     const budget = budgetMap[profile.budget_tier] || profile.budget_tier;
 
     const response = await ai.models.generateContent({
-      model: "gemini-2.5-flash",
+      model: "gemini-3.6-flash",
       contents: `You are a certified Indian nutritionist. Generate a personalized daily 3-meal plan (Breakfast, Lunch, Dinner) strictly following ALL these rules:
 
 CUISINE: Only use ${cuisine} dishes. Do NOT suggest Western, Continental, or generic meals under any circumstances.
@@ -207,7 +207,7 @@ export async function POST(req: Request) {
     const budgetPost = budgetMapPost[profile.budget_tier] || profile.budget_tier;
 
     const response = await ai.models.generateContent({
-      model: "gemini-2.5-flash",
+      model: "gemini-3.6-flash",
       contents: `You are a certified Indian nutritionist. Suggest ONE alternative ${meal_type} dish strictly following ALL these rules:
 
 CUISINE: Only use ${cuisinePost} dishes. Do NOT suggest Western or generic meals.

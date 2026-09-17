@@ -9,7 +9,7 @@ export async function POST(req: Request) {
     if (!text?.trim()) return NextResponse.json({ error: "No food text provided" }, { status: 400 });
 
     const response = await ai.models.generateContent({
-      model: "gemini-2.5-flash",
+      model: "gemini-3.6-flash",
       contents: `Analyze this food description and estimate its nutritional values: "${text}". 
       Give realistic estimates based on standard Indian/common food portions. 
       Return ONLY a JSON object, no markdown.`,

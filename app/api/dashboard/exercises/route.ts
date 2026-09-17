@@ -445,105 +445,105 @@ No code fences.
 No explanation outside JSON.
 `;
 
-  const response =
-    await ai.models.generateContent({
-      model: "gemini-2.5-flash",
+const response =
+  await ai.models.generateContent({
+    model: "gemini-3.6-flash",
 
-      contents: prompt,
+    contents: prompt,
 
-      config: {
-        responseMimeType:
-          "application/json",
+    config: {
+      responseMimeType:
+        "application/json",
 
-        responseSchema: {
-          type: Type.OBJECT,
+      responseSchema: {
+        type: Type.OBJECT,
 
-          properties: {
-            title: {
-              type: Type.STRING,
-            },
-
-            goal: {
-              type: Type.STRING,
-            },
-
-            summary: {
-              type: Type.STRING,
-            },
-
-            duration_minutes: {
-              type: Type.INTEGER,
-            },
-
-            difficulty: {
-              type: Type.STRING,
-            },
-
-            exercises: {
-              type: Type.ARRAY,
-
-              items: {
-                type: Type.OBJECT,
-
-                properties: {
-                  name: {
-                    type: Type.STRING,
-                  },
-
-                  type: {
-                    type: Type.STRING,
-                  },
-
-                  duration_seconds: {
-                    type: Type.INTEGER,
-                  },
-
-                  repetitions: {
-                    type: Type.INTEGER,
-                  },
-
-                  sets: {
-                    type: Type.INTEGER,
-                  },
-
-                  rest_seconds: {
-                    type: Type.INTEGER,
-                  },
-
-                  instructions: {
-                    type: Type.STRING,
-                  },
-
-                  benefit: {
-                    type: Type.STRING,
-                  },
-                },
-
-                required: [
-                  "name",
-                  "type",
-                  "duration_seconds",
-                  "repetitions",
-                  "sets",
-                  "rest_seconds",
-                  "instructions",
-                  "benefit",
-                ],
-              },
-            },
+        properties: {
+          title: {
+            type: Type.STRING,
           },
 
-          required: [
-            "title",
-            "goal",
-            "summary",
-            "duration_minutes",
-            "difficulty",
-            "exercises",
-          ],
+          goal: {
+            type: Type.STRING,
+          },
+
+          summary: {
+            type: Type.STRING,
+          },
+
+          duration_minutes: {
+            type: Type.INTEGER,
+          },
+
+          difficulty: {
+            type: Type.STRING,
+          },
+
+          exercises: {
+            type: Type.ARRAY,
+
+            items: {
+              type: Type.OBJECT,
+
+              properties: {
+                name: {
+                  type: Type.STRING,
+                },
+
+                type: {
+                  type: Type.STRING,
+                },
+
+                duration_seconds: {
+                  type: Type.INTEGER,
+                },
+
+                repetitions: {
+                  type: Type.INTEGER,
+                },
+
+                sets: {
+                  type: Type.INTEGER,
+                },
+
+                rest_seconds: {
+                  type: Type.INTEGER,
+                },
+
+                instructions: {
+                  type: Type.STRING,
+                },
+
+                benefit: {
+                  type: Type.STRING,
+                },
+              },
+
+              required: [
+                "name",
+                "type",
+                "duration_seconds",
+                "repetitions",
+                "sets",
+                "rest_seconds",
+                "instructions",
+                "benefit",
+              ],
+            },
+          },
         },
+
+        required: [
+          "title",
+          "goal",
+          "summary",
+          "duration_minutes",
+          "difficulty",
+          "exercises",
+        ],
       },
-    });
+    },
+  });
 
   if (!response.text) {
     throw new Error(
