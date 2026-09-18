@@ -42,31 +42,6 @@ DietGenie/
 ├── next.config.ts
 ├── tsconfig.json
 └── README.md
-# 🚀 Getting Started
-
-# 1. Clone the repository
-```bash
-git clone https://github.com/khyathi-codes/DietGenie.git
-cd DietGenie
-```
-# Install dependencies
-npm install
-# Create a .env.local file and add:
-NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
-GEMINI_API_KEY=your_gemini_api_key
-# Run the project
-npm run dev
-Then open http://localhost:3000.
-# Production Build
-To verify the project builds successfully:
-```bash
-npm run build
-```
-# To start the production server:
-```bash
-npm start
-```
 # Environment Variables
 NEXT_PUBLIC_SUPABASE_URL – Supabase project URL
 NEXT_PUBLIC_SUPABASE_ANON_KEY – Supabase anonymous key
