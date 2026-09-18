@@ -447,7 +447,7 @@ No explanation outside JSON.
 
 const response =
   await ai.models.generateContent({
-    model: "gemini-3.6-flash",
+    model: "gemini-3.5-flash-lite",
 
     contents: prompt,
 
@@ -543,7 +543,7 @@ const response =
         ],
       },
     },
-  });
+  });https://vercel.com/khyathi-projects/diet-genie
 
   if (!response.text) {
     throw new Error(
@@ -662,21 +662,62 @@ export async function GET() {
     }
 
     if (existingLog) {
-      const streak =
-        await calculateWorkoutStreak(
-          supabase,
-          user.id
-        );
+  const streak =
+    await calculateWorkoutStreak(
+      supabase,
+      user.id
+    );
 
-      return NextResponse.json({
-        plan: existingLog.plan,
-        completed_indices:
-          existingLog.completed_indices ||
-          [],
-        streak,
-        date: today,
-      });
-    }
+  // Refresh nutrition separately so the
+  // Today's Nutrition section stays current.
+  const {
+    data: currentProfile,
+    error: currentProfileError,
+  } = await supabase
+    .from("profiles")
+    .select("calorie_target")
+    .eq("id", user.id)
+    .single();
+
+  if (currentProfileError || !currentProfile) {
+    console.error(
+      "Current profile fetch error:",
+      currentProfileError
+    );
+
+    return NextResponse.json(
+      {
+        error:
+          "Could not load current nutrition target.",
+      },
+      { status: 500 }
+    );
+  }
+
+  const calorieTarget =
+    Number(currentProfile.calorie_target ?? 0);
+
+  const nutritionContext =
+    await getNutritionContext(
+      supabase,
+      user.id,
+      calorieTarget
+    );
+
+  const updatedPlan = {
+    ...existingLog.plan,
+    nutrition_context: nutritionContext,
+  };
+
+  return NextResponse.json({
+    plan: updatedPlan,
+    completed_indices:
+      existingLog.completed_indices ||
+      [],
+    streak,
+    date: today,
+  });
+}
 
     /*
      * Get the user's profile.

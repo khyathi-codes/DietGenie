@@ -335,8 +335,12 @@ cardData[record.meal_type] = {
       });
 
       if (!res.ok) {
-        throw new Error("Failed to swap meal");
-      }
+  const errorData = await res.json().catch(() => null);
+
+  throw new Error(
+    errorData?.error || "Failed to swap meal"
+  );
+}
 
       const newMeal = await res.json();
 

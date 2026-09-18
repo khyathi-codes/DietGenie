@@ -68,7 +68,7 @@ if (existingPlan) {
     const budget = budgetMap[profile.budget_tier] || profile.budget_tier;
 
     const response = await ai.models.generateContent({
-      model: "gemini-3.6-flash",
+model: "gemini-3.5-flash-lite",
       contents: `You are a certified Indian nutritionist. Generate a personalized daily 3-meal plan (Breakfast, Lunch, Dinner) strictly following ALL these rules:
 
 CUISINE: Only use ${cuisine} dishes. Do NOT suggest Western, Continental, or generic meals under any circumstances.
@@ -192,7 +192,16 @@ export async function POST(req: Request) {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-    const { data: profile } = await supabase.from("profiles").select("*").eq("id", user?.id).single();
+    const { data: profile, error: profileError } = await supabase
+  .from("profiles")
+  .select("*")
+  .eq("id", user.id)
+  .single();
+
+if (profileError || !profile) {
+  console.error("Profile fetch error:", profileError);
+  throw new Error("Unable to load your profile.");
+}
 
     const cuisineMapPost: Record<string, string> = {
       "south_indian": "South Indian (e.g. idli, dosa, sambar, upma, pongal, rasam, curd rice, uttapam)",
@@ -207,7 +216,7 @@ export async function POST(req: Request) {
     const budgetPost = budgetMapPost[profile.budget_tier] || profile.budget_tier;
 
     const response = await ai.models.generateContent({
-      model: "gemini-3.6-flash",
+     model: "gemini-3.5-flash-lite",
       contents: `You are a certified Indian nutritionist. Suggest ONE alternative ${meal_type} dish strictly following ALL these rules:
 
 CUISINE: Only use ${cuisinePost} dishes. Do NOT suggest Western or generic meals.
@@ -230,17 +239,36 @@ Return a real, specific Indian dish name — not a generic description.`,
         },
       },
     });
-    const newMeal = JSON.parse(response.text || "{}");
+    if (!response.text) {
+  throw new Error("Gemini returned an empty response.");
+}
+
+let newMeal: Meal;
+try {
+  newMeal = JSON.parse(response.text);
+} catch {
+  console.error("Invalid Gemini response:", response.text);
+  throw new Error("Gemini returned invalid meal data.");
+}
 
 const today = getISTDateString();
 
-const { data: plan } = await supabase
+const { data: plan, error: planError } = await supabase
   .from("daily_meal_plans")
   .select("meals")
   .eq("user_id", user.id)
   .eq("plan_date", today)
   .single();
 
+if (planError && planError.code !== "PGRST116") {
+  console.error("Meal plan fetch error:", planError);
+  throw new Error("Unable to load today's meal plan.");
+}
+
+if (planError && planError.code !== "PGRST116") {
+  console.error("Meal plan fetch error:", planError);
+  throw new Error("Unable to load today's meal plan.");
+}
 if (plan) {
 const updatedMeals = plan.meals.map((meal: Meal) =>
     meal.meal_type === meal_type ? newMeal : meal

@@ -61,7 +61,7 @@ async function generateWithRetry(
   for (let attempt = 1; attempt <= maxAttempts; attempt++) {
     try {
       return await ai.models.generateContent({
-        model: "gemini-3.6-flash",
+       model: "gemini-3.5-flash-lite",
 
         contents: prompt,
 
@@ -175,11 +175,14 @@ async function generateWithRetry(
     ? error.message.toLowerCase()
     : String(error).toLowerCase();
       const isTemporaryGeminiError =
-        message.includes("503") ||
-        message.includes("unavailable") ||
-        message.includes("high demand") ||
-        message.includes("overloaded") ||
-        message.includes("temporarily");
+  message.includes("503") ||
+  message.includes("429") ||
+  message.includes("unavailable") ||
+  message.includes("high demand") ||
+  message.includes("overloaded") ||
+  message.includes("temporarily") ||
+  message.includes("quota") ||
+  message.includes("resource_exhausted");
 
       console.error(
         `Gemini attempt ${attempt}/${maxAttempts} failed:`,
@@ -198,11 +201,20 @@ async function generateWithRetry(
        * If this was the final attempt, throw the error.
        */
       if (attempt === maxAttempts) {
-        throw new Error(
-          "Gemini is temporarily busy. Please try generating your dishes again in a few moments."
-        );
-      }
+  if (
+    message.includes("429") ||
+    message.includes("quota") ||
+    message.includes("resource_exhausted")
+  ) {
+    throw new Error(
+      "The Genie has reached its current AI usage limit. Please try again later."
+    );
+  }
 
+  throw new Error(
+    "Gemini is temporarily busy. Please try generating your dishes again in a few moments."
+  );
+}
       /*
        * Increasing delay:
        *
